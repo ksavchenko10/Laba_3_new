@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 #include <QSplitter>
 #include <QListView>
 #include <QTreeView>
@@ -35,6 +34,7 @@
 #include <QtWidgets/QLabel>
 #include <QtCore/QTime>
 #include <QtCharts/QBarCategoryAxis>
+#include <QPushButton>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -102,6 +102,14 @@ MainWindow::MainWindow(QWidget *parent)
     //делаем вызов функции on_checkBoxClicked при нажатии на checkbox
     connect(checkBox, SIGNAL(clicked()), this, SLOT(on_checkBoxClicked()));
     splitterRightFirst->addWidget(checkBox);//добавляем к сплиттеру
+
+    QPushButton *print = new QPushButton("Печать"); //кнопка
+    print->setMaximumWidth(200); //максимальная ширина
+    print->setMaximumHeight(rightopSplitterHeight); //максимальная высота
+    //делаем вызов функции on_paintClicked при нажатии на кнопку
+    connect(print, SIGNAL(clicked()), this, SLOT(on_paintClicked()));
+    splitterRightFirst->addWidget(print); //добавляем к сплиттеру
+
 
     //1.Добавление диаграммы
         QChartView *chartView;
