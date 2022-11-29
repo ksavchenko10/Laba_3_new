@@ -96,6 +96,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(qbox, SIGNAL(currentIndexChanged(QString)), this, SLOT(on_comboBoxChanged()));
     splitterRightFirst->addWidget(qbox); //доблавяем к сплиттеру
 
+    checkBox = new QCheckBox("Черно-белый график: "); //чек бокс для выбора цвета графика
+    checkBox->setMaximumWidth(200); //максимальная ширина
+    checkBox->setMaximumHeight(rightopSplitterHeight); //максимальная высота
+    //делаем вызов функции on_checkBoxClicked при нажатии на checkbox
+    connect(checkBox, SIGNAL(clicked()), this, SLOT(on_checkBoxClicked()));
+    splitterRightFirst->addWidget(checkBox);//добавляем к сплиттеру
 
     //1.Добавление диаграммы
         QChartView *chartView;

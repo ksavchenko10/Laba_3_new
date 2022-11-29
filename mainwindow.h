@@ -27,6 +27,10 @@ private:
     QFileSystemModel *dirModel;
     QTreeView *treeView;
     QTableView *tableView;
+    QtCharts::QChartView *chartView;
+    QtCharts::QChart *chart;
+    QComboBox *qbox;
+    QCheckBox *checkBox;
 
 };
 
