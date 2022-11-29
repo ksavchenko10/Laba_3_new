@@ -67,6 +67,20 @@ MainWindow::MainWindow(QWidget *parent)
     splitter->addWidget(tableView); //добавляем таблицу к сплиттеру
     setCentralWidget(splitter); //
 
+    QSplitter *splitterRight = new QSplitter(parent); //содзаем правый сплиттер
+    splitterRight->setOrientation(Qt::Vertical); //размещение элементов в нем вертикальное
+    splitter->addWidget(splitterRight); //доблавяем сплиттер к нашему основному сплиттеру, правая часть программы
+
+    QSplitter *splitterEmptyVertical = new QSplitter(parent); //пустой сплиттер, чтобы сдвинуть элементы вверху
+    splitterEmptyVertical->setMaximumHeight(10); //задаем максимальную высоту
+    splitterRight->addWidget(splitterEmptyVertical); //добавляем сплитер
+
+    int rightopSplitterHeight = 30; //задает высоту панели
+    QSplitter *splitterRightFirst = new QSplitter(parent); //создаем сплиттер с нашими элементами управления
+    splitterRightFirst->setOrientation(Qt::Horizontal); //ориентация размещения на нем горизонтальная
+    splitterRightFirst->setMaximumHeight(rightopSplitterHeight); //максимальная высота
+    splitterRight->addWidget(splitterRightFirst); //доблавяем к нашему правому сплиттеру
+
 
     //1.Добавление диаграммы
         QChartView *chartView;
