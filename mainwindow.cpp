@@ -1,15 +1,39 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QSplitter>
+#include <QListView>
+#include <QTreeView>
+#include <QTextEdit>
+#include <QFileSystemModel>
+#include <QItemSelectionModel>
+#include <QVBoxLayout>
+#include <QTableView>
+#include <QHeaderView>
+#include <QStatusBar>
+#include <QDebug>
+#include <QtWidgets/QWidget>
+#include <QtCharts/QChartGlobal>
+#include <QtCharts/QChartView>
+#include <QtCharts/QPieSeries>
+#include <QtCharts/QPieSlice>
+#include <QtCharts/QAbstractBarSeries>
+#include <QtCharts/QPercentBarSeries>
+#include <QtCharts/QStackedBarSeries>
+#include <QtCharts/QBarSeries>
+#include <QtCharts/QBarSet>
+#include <QtCharts/QLineSeries>
+#include <QtCharts/QSplineSeries>
+#include <QtCharts/QScatterSeries>
+#include <QtCharts/QAreaSeries>
+#include <QtCharts/QLegend>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QFormLayout>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QLabel>
+#include <QtCore/QTime>
+#include <QtCharts/QBarCategoryAxis>
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
-{
-    ui->setupUi(this);
-}
-
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
 
