@@ -41,12 +41,12 @@ MainWindow::MainWindow(QWidget *parent)
     : //QWidget(parent)
       QMainWindow(parent)
 {
-    themeWidget = new ThemeWidget();
     //Устанавливаем размер главного окна
     this->setGeometry(100, 100, 1500, 500);
     this->setStatusBar(new QStatusBar(this));
-    this->statusBar()->showMessage("Choosen Path: ");
-    QString homePath = QDir::homePath();
+    this->statusBar()->showMessage("Выберите файл БД:");
+    QString homePath = QDir::currentPath();
+
     // Определим  файловой системы:
     dirModel =  new QFileSystemModel(this);
     dirModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs);
@@ -54,16 +54,19 @@ MainWindow::MainWindow(QWidget *parent)
 
     fileModel = new QFileSystemModel(this);
     fileModel->setFilter(QDir::NoDotAndDotDot | QDir::Files);
-
     fileModel->setRootPath(homePath);
+
     //Показать как дерево, пользуясь готовым видом:
-
-    treeView = new QTreeView();
+    treeView = new QTreeView(); //дерево файлов
     treeView->setModel(dirModel);
-
     treeView->expandAll();
-    QSplitter *splitter = new QSplitter(parent);
-    tableView = new QTableView;
-    tableView->setModel(fileModel);
-    splitter->addWidget(treeView);
-    //splitter->addWidget(tableView);
+
+    QSplitter *splitter = new QSplitter(parent); //создаем сплиттер
+    tableView = new QTableView; //создаем таблицу
+    tableView->setModel(fileModel); //добавляем наше дерево файлов в таблицу
+    splitter->addWidget(tableView); //добавляем таблицу к сплиттеру
+    setCentralWidget(splitter); //
+
+
+
+}
