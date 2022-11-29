@@ -81,6 +81,21 @@ MainWindow::MainWindow(QWidget *parent)
     splitterRightFirst->setMaximumHeight(rightopSplitterHeight); //максимальная высота
     splitterRight->addWidget(splitterRightFirst); //доблавяем к нашему правому сплиттеру
 
+    QLabel *caption = new QLabel("Выберите тип диаграммы: "); //текст
+    caption->setMaximumWidth(200); //максимальная ширина
+    caption->setAlignment(Qt::AlignRight|Qt::AlignCenter); //ориентация право по горизонтали и по вертикали по середине
+    caption->setMaximumHeight(rightopSplitterHeight); //максимальная высота
+    splitterRightFirst->addWidget(caption); //добавляем к сплиттеру
+
+    qbox = new QComboBox(); //раскрывающийся список
+    qbox->setMaximumWidth(100); //максимальная ширина
+    qbox->setMaximumHeight(rightopSplitterHeight); //максимальная высота
+    qbox->addItem("BarChart"); //добавляем элемент для выбора
+    qbox->addItem("PieChart"); //добавляем элемент для выбора
+    //делаем вызов функции on_comboBoxChanged при изменении выбранного элемента в списке
+    connect(qbox, SIGNAL(currentIndexChanged(QString)), this, SLOT(on_comboBoxChanged()));
+    splitterRightFirst->addWidget(qbox); //доблавяем к сплиттеру
+
 
     //1.Добавление диаграммы
         QChartView *chartView;
