@@ -35,6 +35,7 @@
 #include <QtCore/QTime>
 #include <QtCharts/QBarCategoryAxis>
 #include <QPushButton>
+#include <QPdfWriter>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -196,4 +197,14 @@ void MainWindow::on_checkBoxClicked()
 void MainWindow::on_comboBoxChanged()
 {
    redraw(); //вызываем функции перерисовки графика
+}
+
+void MainWindow::on_paintClicked() //печать графика в pdf
+{
+    QPdfWriter writer("out.pdf"); // создаем экземпляр QPdfWriter и передаем в конструктор имя файла
+    writer.setCreator("Someone");//Указываем создателя документа
+    writer.setPageSize(QPagedPaintDevice::A4);//Устанавливаем размер страницы
+    QPainter painter(&writer); //объект для создания графики
+    chartView->render(&painter); //считываем график из chartView
+    painter.end(); //завершаем создание
 }
