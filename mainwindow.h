@@ -31,6 +31,7 @@ private:
     QtCharts::QChart *chart;
     QComboBox *qbox;
     QCheckBox *checkBox;
+    QtCharts::QValueAxis *axisY;
 
 };
 

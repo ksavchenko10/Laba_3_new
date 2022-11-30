@@ -116,15 +116,14 @@ MainWindow::MainWindow(QWidget *parent)
     chart = chartView->chart();
     splitterRight->addWidget(chartView); //добавляем к сплиттеру
 
-    //1.Добавление диаграммы
-        QChartView *chartView;
-        QChart *chartBar =  themeWidget->createBarChart(5);
-        chartView = new QChartView(chartBar);
+     axisY = new QtCharts::QValueAxis(); //ось
+     axisY->setMin(0); //минимальное значение оси
+     axisY->setMax(200); //максимальное
+     axisY->setTickCount(10); //шаг
 
-        //splitter->addWidget(themeWidget);
-        //splitter->addWidget(chartView);
-        splitter->addWidget(chartView);
-        setCentralWidget(splitter);
+     chart->addAxis(axisY, Qt::AlignLeft);//доблавяем ось У к графику
+
+ //1.Добавление диаграммы
 
         QItemSelectionModel *selectionModel = treeView->selectionModel();
         QModelIndex rootIx = dirModel->index(0, 0, QModelIndex());//корневой элемент
