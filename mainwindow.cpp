@@ -36,6 +36,7 @@
 #include <QtCharts/QBarCategoryAxis>
 #include <QPushButton>
 #include <QPdfWriter>
+#include <QSqlDatabase>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -207,4 +208,14 @@ void MainWindow::on_paintClicked() //печать графика в pdf
     QPainter painter(&writer); //объект для создания графики
     chartView->render(&painter); //считываем график из chartView
     painter.end(); //завершаем создание
+}
+
+void MainWindow::redraw()
+{
+    QModelIndex index = tableView->selectionModel()->currentIndex(); //текущая выбранная строка в дереве файлов
+    QModelIndex i = tableView->model()->index(index.row(),0,index.parent());
+    QString homePath = QDir::currentPath(); //текущий путь к папке
+    QString filePath = homePath + "/" + i.data().toString(); //путь к файлу
+    QString fileName = i.data().toString().split(".").at(0); //имя файла
+    QSqlDatabase dbase = QSqlDatabase::addDatabase("QSQLITE"); //для базы данных
 }
