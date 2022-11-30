@@ -181,3 +181,19 @@ MainWindow::MainWindow(QWidget *parent)
         connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
                  this, SLOT(on_selectionChangedSlot(const QItemSelection &, const QItemSelection &)));
 }
+
+void MainWindow::on_selectionChangedSlot(const QItemSelection &selected, const QItemSelection &deselected)
+{
+    Q_UNUSED(deselected);
+    redraw(); //вызываем функции перерисовки графика
+}
+
+void MainWindow::on_checkBoxClicked()
+{
+    redraw(); //вызываем функции перерисовки графика
+}
+
+void MainWindow::on_comboBoxChanged()
+{
+   redraw(); //вызываем функции перерисовки графика
+}
