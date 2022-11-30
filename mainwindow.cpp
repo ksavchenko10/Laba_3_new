@@ -111,6 +111,11 @@ MainWindow::MainWindow(QWidget *parent)
     splitterRightFirst->addWidget(print); //добавляем к сплиттеру
 
 
+    chartView = new QtCharts::QChartView(); //график
+    chartView->resize(640, 480); //задаем размер
+    chart = chartView->chart();
+    splitterRight->addWidget(chartView); //добавляем к сплиттеру
+
     //1.Добавление диаграммы
         QChartView *chartView;
         QChart *chartBar =  themeWidget->createBarChart(5);
