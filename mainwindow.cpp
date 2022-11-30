@@ -131,8 +131,10 @@ MainWindow::MainWindow(QWidget *parent)
         QModelIndex indexHomePath = dirModel->index(homePath);
         QFileInfo fileInfo = dirModel->fileInfo(indexHomePath);
 
+        tableView->setRootIndex(fileModel->setRootPath(homePath)); //устанавливаем папку с файлами текущую программы
+
         /* Рассмотрим способы обхода содержимого папок на диске.
-         * Предлагается вариант решения, которы может быть применен для более сложных задач.
+         * Предлагается вариант решения, который может быть применен для более сложных задач.
          * Итак, если требуется выполнить анализ содержимого папки, то необходимо организовать обход содержимого. Обход выполняем относительно модельного индекса.
          * Например:*/
         if (fileInfo.isDir()) {
@@ -167,7 +169,7 @@ MainWindow::MainWindow(QWidget *parent)
         //Выполняем соединения слота и сигнала который вызывается когда осуществляется выбор элемента в TreeView
         connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
                 this, SLOT(on_selectionChangedSlot(const QItemSelection &, const QItemSelection &)));
-        //Пример организации установки курсора в TreeView относит ельно модельного индекса
+        //Пример организации установки курсора в TreeView относительно модельного индекса
         QItemSelection toggleSelection;
         QModelIndex topLeft;
         topLeft = dirModel->index(homePath);
@@ -175,5 +177,7 @@ MainWindow::MainWindow(QWidget *parent)
 
         toggleSelection.select(topLeft, topLeft);
         selectionModel->select(toggleSelection, QItemSelectionModel::Toggle);
-    }
+
+        connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+                 this, SLOT(on_selectionChangedSlot(const QItemSelection &, const QItemSelection &)));
 }
