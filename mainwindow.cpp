@@ -238,5 +238,31 @@ void MainWindow::redraw()
             chart->removeAllSeries(); //удаляем все серии на графике
             int numRecord = 200; //сколько записей показыват на графике
 
+            if (qbox->currentIndex() == 0) //если выбран Barchart
+            {
+                QtCharts::QBarSeries *series = new QtCharts::QBarSeries(); //серия данных для графика
+                a_query.first(); //выбираем первую запись в базе данных
+                int i = 0;
+                float maxvalue = 0; //максимальное значение, нужно для задания  оси У
+                float minvalue = 0;//минимальное значение, нужно для задания  оси У
+
+                do //цикл по всем записям из запроса к базе данных
+                {
+                    float value = a_query.value("Value").toFloat(); //значение в записи из базы
+                    if (maxvalue < value) // если максимальный меньше чем значение текущей записи
+                    {
+                        maxvalue = value; //устаналиваем новое максимальное
+                    }
+
+                    if (value < minvalue) //если минимальное больше чем значение текущей записи
+                    {
+                        minvalue = value; //устанавливаем новое минимальное
+                    }
+                  }
+
+             }
+         }
+
+
 
 }
