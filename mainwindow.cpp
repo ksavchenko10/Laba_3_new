@@ -258,6 +258,26 @@ void MainWindow::redraw()
                     {
                         minvalue = value; //устанавливаем новое минимальное
                     }
+
+                    //для графика создаем пару: название для легенды из поля time и значением value
+                    QtCharts::QBarSet *bar = new QtCharts::QBarSet(a_query.value("Time").toString()); //название для легенды этого значения на графике
+                    *bar <<  value; //добавляем значение
+
+                    if (checkBox->isChecked()) //если checkbox выбран, должно быть черно-белым
+                    {
+                        if (i % 2 == 0) //если четное
+                        {
+                          bar->setColor(Qt::black); //делаем эту линию на графике черной
+                        }
+                        else
+                        {
+                            bar->setColor(Qt::gray); //делаем эту линию на графике серой
+                        }
+                     }
+
+                     series->append(bar); //доблавяем объект линии к серии графика
+
+                     i++;
                   }
 
              }
