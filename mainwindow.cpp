@@ -11,29 +11,11 @@
 #include <QStatusBar>
 #include <QDebug>
 #include <QtWidgets/QWidget>
-#include <QtCharts/QChartGlobal>
-#include <QtCharts/QChartView>
-#include <QtCharts/QPieSeries>
-#include <QtCharts/QPieSlice>
-#include <QtCharts/QAbstractBarSeries>
-#include <QtCharts/QPercentBarSeries>
-#include <QtCharts/QStackedBarSeries>
-#include <QtCharts/QBarSeries>
-#include <QtCharts/QBarSet>
-#include <QtCharts/QLineSeries>
-#include <QtCharts/QSplineSeries>
-#include <QtCharts/QScatterSeries>
-#include <QtCharts/QAreaSeries>
-#include <QtCharts/QLegend>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QFormLayout>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QLabel>
-#include <QtCore/QTime>
-#include <QtCharts/QBarCategoryAxis>
+#include <QtSql>
+#include <QComboBox>
+#include <QCheckBox>
+#include <QLabel>
+#include <QtCharts/QValueAxis>
 #include <QPushButton>
 #include <QPdfWriter>
 #include <QSqlDatabase>
@@ -215,7 +197,26 @@ void MainWindow::redraw()
     QModelIndex index = tableView->selectionModel()->currentIndex(); //текущая выбранная строка в дереве файлов
     QModelIndex i = tableView->model()->index(index.row(),0,index.parent());
     QString homePath = QDir::currentPath(); //текущий путь к папке
-    QString filePath = homePath + "/" + i.data().toString(); //путь к файлу
-    QString fileName = i.data().toString().split(".").at(0); //имя файла
-    QSqlDatabase dbase = QSqlDatabase::addDatabase("QSQLITE"); //для базы данных
+    QString fileNameWithExtension = file.data().toString(); //имя файла с раширением
+    QString filePath = homePath + "/" + fileNameWithExtension; //путь к файлу
+    QString fileName = fileNameWithExtension.split(".").at(0); //имя файла
+
+    bool extensionIsSqlLite = false; //флаг который будет определять расширение у файла sqlite или нет
+    int extensionIndex = fileNameWithExtension.lastIndexOf("."); //ищем последнюю точку в имени файла
+    if (extensionIndex != -1) //если не найдена, значит расширения нет
+    {
+        if (fileNameWithExtension.mid(extensionIndex+1) == "sqlite") //текст после точки это расширение, если равно sqllite значит расширение нужной базы данных
+        {
+            extensionIsSqlLite = true; //ставим флаг что это файл расширения sqllite
+        }
+    }
+
+    if (!extensionIsSqlLite) //если файл не расширения sqlite
+    {
+        qDebug() << "File is not database sqllite"; //выводим информацию в консоль
+        chart->removeAllSeries(); //удаляем все серии на графике
+        return;
+    }
+
 }
+
