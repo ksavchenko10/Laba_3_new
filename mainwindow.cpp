@@ -32,13 +32,13 @@ MainWindow::MainWindow(QWidget *parent)
     QString homePath = QDir::currentPath();
 
     // Определим  файловой системы:
-    dirModel =  new QFileSystemModel(this);
-    dirModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs);
-    dirModel->setRootPath(homePath);
+    //dirModel =  new QFileSystemModel(this);
+    //dirModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs);
+    //dirModel->setRootPath(homePath);
 
     fileModel = new QFileSystemModel(this);
     fileModel->setFilter(QDir::NoDotAndDotDot | QDir::Files);
-    fileModel->setRootPath(homePath);
+    //fileModel->setRootPath(homePath);
 
     //Показать как дерево, пользуясь готовым видом:
     treeView = new QTreeView(); //дерево файлов
@@ -61,7 +61,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     int rightopSplitterHeight = 30; //задает высоту панели
     QSplitter *splitterRightFirst = new QSplitter(parent); //создаем сплиттер с нашими элементами управления
-    splitterRightFirst->setOrientation(Qt::Horizontal); //ориентация размещения на нем горизонтальная
+    //splitterRightFirst->setOrientation(Qt::Horizontal); //ориентация размещения на нем горизонтальная
     splitterRightFirst->setMaximumHeight(rightopSplitterHeight); //максимальная высота
     splitterRight->addWidget(splitterRightFirst); //доблавяем к нашему правому сплиттеру
 
@@ -110,30 +110,30 @@ MainWindow::MainWindow(QWidget *parent)
  //1.Добавление диаграммы
 
         QItemSelectionModel *selectionModel = treeView->selectionModel();
-        QModelIndex rootIx = dirModel->index(0, 0, QModelIndex());//корневой элемент
+        /*QModelIndex rootIx = dirModel->index(0, 0, QModelIndex());//корневой элемент
 
         QModelIndex indexHomePath = dirModel->index(homePath);
         QFileInfo fileInfo = dirModel->fileInfo(indexHomePath);
-
+*/
         tableView->setRootIndex(fileModel->setRootPath(homePath)); //устанавливаем папку с файлами текущую программы
 
         /* Рассмотрим способы обхода содержимого папок на диске.
          * Предлагается вариант решения, который может быть применен для более сложных задач.
          * Итак, если требуется выполнить анализ содержимого папки, то необходимо организовать обход содержимого. Обход выполняем относительно модельного индекса.
          * Например:*/
-        if (fileInfo.isDir()) {
+        /*if (fileInfo.isDir()) {
             /*
              * Если fileInfo папка то заходим в нее, что бы просмотреть находящиеся в ней файлы.
              * Если нужно просмотреть все файлы, включая все вложенные папки, то нужно организовать рекурсивный обход.
             */
-            QDir dir  = fileInfo.dir();
+            /*QDir dir  = fileInfo.dir();
 
             if (dir.cd(fileInfo.fileName())) {
                 /**
                  * Если зашли в папку, то пройдемся по контейнеру QFileInfoList ,полученного методом entryInfoList,
                  * */
 
-                foreach (QFileInfo inf, dir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot, QDir::Type)) {
+               /* foreach (QFileInfo inf, dir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot, QDir::Type)) {
                     qDebug() << inf.fileName() << "---" << inf.size();
                 }
 
@@ -162,8 +162,11 @@ MainWindow::MainWindow(QWidget *parent)
         toggleSelection.select(topLeft, topLeft);
         selectionModel->select(toggleSelection, QItemSelectionModel::Toggle);
 
+        */
+        //Выполняем соединения слота и сигнала который вызывается когда осуществляется выбор элемента в TableView
         connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
                  this, SLOT(on_selectionChangedSlot(const QItemSelection &, const QItemSelection &)));
+        //выбор осуществляется с помощью курсора
 }
 
 void MainWindow::on_selectionChangedSlot(const QItemSelection &selected, const QItemSelection &deselected)
@@ -218,5 +221,22 @@ void MainWindow::redraw()
         return;
     }
 
-}
+    QSqlDatabase dbase = QSqlDatabase::addDatabase("QSQLITE"); //объект для работы с базой данных
+    dbase.setDatabaseName(filePath); //устанавливаем имя базы данных
 
+    if (!dbase.open()) //если база данных не открылась
+    {
+        qDebug() << "Open database ERROR"; //выводим информацию в консоль
+        chart->removeAllSeries(); //удаляем все серии на графике
+        return;
+    }
+    else
+        {
+            QSqlQuery a_query; //создаем экземпляр для sql запросов
+            a_query.exec("SELECT * FROM "+fileName); //sql запрос к базе данных, выбираем все записи
+
+            chart->removeAllSeries(); //удаляем все серии на графике
+            int numRecord = 200; //сколько записей показыват на графике
+
+
+}
