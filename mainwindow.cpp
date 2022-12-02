@@ -31,41 +31,31 @@ MainWindow::MainWindow(QWidget *parent)
 {
     //Устанавливаем размер главного окна
     this->setGeometry(100, 100, 1500, 500);
-    this->setStatusBar(new QStatusBar(this));
-    this->statusBar()->showMessage("Выберите файл БД:");
-    QString homePath = QDir::currentPath();
+    this->setStatusBar(new QStatusBar(this)); //устанавливаем статус бар внизу программы
+    this->statusBar()->showMessage("Выберите файл БД:"); //устаналиваем сообщение в статус бар
+    QString homePath = QDir::currentPath(); //текущая папка программы
 
-    // Определим  файловой системы:
-    //dirModel =  new QFileSystemModel(this);
-    //dirModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs);
-    //dirModel->setRootPath(homePath);
+    fileModel = new QFileSystemModel(this); //создаем эксемпляр класса QFileSystemModel для доступа к файлам
+    fileModel->setFilter(QDir::NoDotAndDotDot | QDir::Files); //ставим фильтры:
+    //NoDotAndDotDot - не выбирать переход на уровень вверх ..
+    //AllDirs - все папки
 
-    fileModel = new QFileSystemModel(this);
-    fileModel->setFilter(QDir::NoDotAndDotDot | QDir::Files);
-    //fileModel->setRootPath(homePath);
-
-    //Показать как дерево, пользуясь готовым видом:
-    //treeView = new QTreeView(); //дерево файлов
-    //treeView->setModel(dirModel);
-    //treeView->expandAll();
-
-    QSplitter *splitter = new QSplitter(parent); //создаем сплиттер
+    QSplitter *splitter = new QSplitter(parent); //создаем основной сплиттер
     tableView = new QTableView; //создаем таблицу
-    tableView->setModel(fileModel); //добавляем наше дерево файлов в таблицу
+    tableView->setModel(fileModel); //устаналиваем модель работы с файлами в нашей таблице
     splitter->addWidget(tableView); //добавляем таблицу к сплиттеру
-    setCentralWidget(splitter); //
+    setCentralWidget(splitter); //устаналиваем сплиттер как центральный виджет
 
-    QSplitter *splitterRight = new QSplitter(parent); //содзаем правый сплиттер
-    splitterRight->setOrientation(Qt::Vertical); //размещение элементов в нем вертикальное
-    splitter->addWidget(splitterRight); //доблавяем сплиттер к нашему основному сплиттеру, правая часть программы
+    QSplitter *splitterRight = new QSplitter(parent); //создаем правый сплиттер
+    splitterRight->setOrientation(Qt::Vertical); //размещение элементов в нем вертикальное, (все что будем добавлять к этому сплиттеру будет смещаться вниз)
+    splitter->addWidget(splitterRight); //добавляем сплиттер к нашему основному сплиттеру, правая часть программы
 
     QSplitter *splitterEmptyVertical = new QSplitter(parent); //пустой сплиттер, чтобы сдвинуть элементы вверху
     splitterEmptyVertical->setMaximumHeight(10); //задаем максимальную высоту
-    splitterRight->addWidget(splitterEmptyVertical); //добавляем сплитер
+    splitterRight->addWidget(splitterEmptyVertical); //добавляем сплитер к правому сплиттеру
 
     int rightopSplitterHeight = 30; //задает высоту панели
     QSplitter *splitterRightFirst = new QSplitter(parent); //создаем сплиттер с нашими элементами управления
-    //splitterRightFirst->setOrientation(Qt::Horizontal); //ориентация размещения на нем горизонтальная
     splitterRightFirst->setMaximumHeight(rightopSplitterHeight); //максимальная высота
     splitterRight->addWidget(splitterRightFirst); //доблавяем к нашему правому сплиттеру
 
@@ -73,13 +63,14 @@ MainWindow::MainWindow(QWidget *parent)
     caption->setMaximumWidth(200); //максимальная ширина
     caption->setAlignment(Qt::AlignRight|Qt::AlignCenter); //ориентация право по горизонтали и по вертикали по середине
     caption->setMaximumHeight(rightopSplitterHeight); //максимальная высота
-    splitterRightFirst->addWidget(caption); //добавляем к сплиттеру
+    splitterRightFirst->addWidget(caption); //добавляем к сплиттеру панели
 
     qbox = new QComboBox(); //раскрывающийся список
     qbox->setMaximumWidth(100); //максимальная ширина
     qbox->setMaximumHeight(rightopSplitterHeight); //максимальная высота
     qbox->addItem("BarChart"); //добавляем элемент для выбора
     qbox->addItem("PieChart"); //добавляем элемент для выбора
+    //выполняем соединения слота и сигнала
     //делаем вызов функции on_comboBoxChanged при изменении выбранного элемента в списке
     connect(qbox, SIGNAL(currentIndexChanged(QString)), this, SLOT(on_comboBoxChanged()));
     splitterRightFirst->addWidget(qbox); //доблавяем к сплиттеру
@@ -89,84 +80,32 @@ MainWindow::MainWindow(QWidget *parent)
     checkBox->setMaximumHeight(rightopSplitterHeight); //максимальная высота
     //делаем вызов функции on_checkBoxClicked при нажатии на checkbox
     connect(checkBox, SIGNAL(clicked()), this, SLOT(on_checkBoxClicked()));
-    splitterRightFirst->addWidget(checkBox);//добавляем к сплиттеру
+    splitterRightFirst->addWidget(checkBox);//добавляем к правому сплиттеру
 
-    QPushButton *print = new QPushButton("Печать"); //кнопка
+    QPushButton *print = new QPushButton("Печать"); //кнопка для создания pdf файла из графика
     print->setMaximumWidth(200); //максимальная ширина
     print->setMaximumHeight(rightopSplitterHeight); //максимальная высота
     //делаем вызов функции on_paintClicked при нажатии на кнопку
     connect(print, SIGNAL(clicked()), this, SLOT(on_paintClicked()));
-    splitterRightFirst->addWidget(print); //добавляем к сплиттеру
+    splitterRightFirst->addWidget(print); //добавляем к правому сплиттеру
 
 
     chartView = new QtCharts::QChartView(); //график
     chartView->resize(640, 480); //задаем размер
-    chart = chartView->chart();
-    splitterRight->addWidget(chartView); //добавляем к сплиттеру
+    chart = chartView->chart(); //объект для доступа к данным нашего графика
+    splitterRight->addWidget(chartView); //добавляем к правому сплиттеру
 
-     axisY = new QtCharts::QValueAxis(); //ось
+     axisY = new QtCharts::QValueAxis(); //объект оси графика
      axisY->setMin(0); //минимальное значение оси
      axisY->setMax(200); //максимальное
-     axisY->setTickCount(10); //шаг
+     axisY->setTickCount(10); //шаг сетки (линий)
 
      chart->addAxis(axisY, Qt::AlignLeft);//доблавяем ось У к графику
 
- //1.Добавление диаграммы
 
-        QItemSelectionModel *selectionModel = treeView->selectionModel();
-        /*QModelIndex rootIx = dirModel->index(0, 0, QModelIndex());//корневой элемент
+        QItemSelectionModel *selectionModel = tableView->selectionModel(); //объект модели tableview
+        tableView->setRootIndex(fileModel->setRootPath(homePath)); //устанавливаем для tableView текущую папку откуда запущена программа
 
-        QModelIndex indexHomePath = dirModel->index(homePath);
-        QFileInfo fileInfo = dirModel->fileInfo(indexHomePath);
-*/
-        tableView->setRootIndex(fileModel->setRootPath(homePath)); //устанавливаем папку с файлами текущую программы
-
-        /* Рассмотрим способы обхода содержимого папок на диске.
-         * Предлагается вариант решения, который может быть применен для более сложных задач.
-         * Итак, если требуется выполнить анализ содержимого папки, то необходимо организовать обход содержимого. Обход выполняем относительно модельного индекса.
-         * Например:*/
-        /*if (fileInfo.isDir()) {
-            /*
-             * Если fileInfo папка то заходим в нее, что бы просмотреть находящиеся в ней файлы.
-             * Если нужно просмотреть все файлы, включая все вложенные папки, то нужно организовать рекурсивный обход.
-            */
-            /*QDir dir  = fileInfo.dir();
-
-            if (dir.cd(fileInfo.fileName())) {
-                /**
-                 * Если зашли в папку, то пройдемся по контейнеру QFileInfoList ,полученного методом entryInfoList,
-                 * */
-
-               /* foreach (QFileInfo inf, dir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot, QDir::Type)) {
-                    qDebug() << inf.fileName() << "---" << inf.size();
-                }
-
-                dir.cdUp();//выходим из папки
-            }
-        }
-
-        QDir dir = fileInfo.dir();
-
-        foreach (QFileInfo inf, dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot, QDir::Type)) {
-
-            qDebug() << inf.fileName() << "---" << inf.size();
-        }
-
-
-        treeView->header()->resizeSection(0, 200);
-        //Выполняем соединения слота и сигнала который вызывается когда осуществляется выбор элемента в TreeView
-        connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-                this, SLOT(on_selectionChangedSlot(const QItemSelection &, const QItemSelection &)));
-        //Пример организации установки курсора в TreeView относительно модельного индекса
-        QItemSelection toggleSelection;
-        QModelIndex topLeft;
-        topLeft = dirModel->index(homePath);
-        dirModel->setRootPath(homePath);
-
-        toggleSelection.select(topLeft, topLeft);
-        selectionModel->select(toggleSelection, QItemSelectionModel::Toggle);
-
-        */
         //Выполняем соединения слота и сигнала который вызывается когда осуществляется выбор элемента в TableView
         connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
                  this, SLOT(on_selectionChangedSlot(const QItemSelection &, const QItemSelection &)));
@@ -175,18 +114,18 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::on_selectionChangedSlot(const QItemSelection &selected, const QItemSelection &deselected)
 {
-    Q_UNUSED(deselected);
-    redraw(); //вызываем функции перерисовки графика
+    Q_UNUSED(deselected); //чтобы компилятор не ругался на не используемую переменную
+    redraw(); //вызываем функцию попытки открыть базы данных и перерисовки графика
 }
 
 void MainWindow::on_checkBoxClicked()
 {
-    redraw(); //вызываем функции перерисовки графика
+    redraw(); //вызываем функцию попытки открыть базы данных и перерисовки графика
 }
 
 void MainWindow::on_comboBoxChanged()
 {
-   redraw(); //вызываем функции перерисовки графика
+   redraw(); //вызываем функцию попытки открыть базы данных и перерисовки графика
 }
 
 void MainWindow::on_paintClicked() //печать графика в pdf
@@ -202,10 +141,10 @@ void MainWindow::on_paintClicked() //печать графика в pdf
 void MainWindow::redraw()
 {
     QModelIndex index = tableView->selectionModel()->currentIndex(); //текущая выбранная строка в дереве файлов
-    QModelIndex i = tableView->model()->index(index.row(),0,index.parent());
+    QModelIndex file = tableView->model()->index(index.row(),0,index.parent()); //доступ к объекту текущего выбранного файла из модели нашего дерева файлов
     QString homePath = QDir::currentPath(); //текущий путь к папке
     QString fileNameWithExtension = file.data().toString(); //имя файла с раширением
-    QString filePath = homePath + "/" + fileNameWithExtension; //путь к файлу
+    QString filePath = homePath + "/" + fileNameWithExtension; //полный путь к файлу
     QString fileName = fileNameWithExtension.split(".").at(0); //имя файла
 
     bool extensionIsSqlLite = false; //флаг который будет определять расширение у файла sqlite или нет

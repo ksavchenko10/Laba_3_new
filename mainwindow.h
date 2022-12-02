@@ -24,18 +24,16 @@ private slots:
     void on_paintClicked(); //печать графика в pdf
 
 public:
-    MainWindow(QWidget *parent = 0);
+    MainWindow(QWidget *parent = 0); //конструктор
     ~MainWindow();
 private:
-    QFileSystemModel *fileModel;
-    //QFileSystemModel *dirModel;
-    //QTreeView *treeView;
-    QTableView *tableView;
-    QtCharts::QChartView *chartView;
-    QtCharts::QChart *chart;
-    QComboBox *qbox;
-    QCheckBox *checkBox;
-    QtCharts::QValueAxis *axisY;
+    QFileSystemModel *fileModel; //объект для работы с файловой системой
+    QTableView *tableView; //таблица с деревом файлов
+    QtCharts::QChartView *chartView; //объект график
+    QtCharts::QChart *chart; //объект данные графика
+    QComboBox *qbox; //раскрывающийся список
+    QCheckBox *checkBox; //checkbox выбора черное/бело
+    QtCharts::QValueAxis *axisY; //объект для задания оси графика
 
 };
 
