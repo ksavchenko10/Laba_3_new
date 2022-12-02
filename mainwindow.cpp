@@ -279,7 +279,13 @@ void MainWindow::redraw()
 
                      i++;
                   }
+                  while(a_query.next() && i <= numRecord); //переходим к следующей записи и если не больше numRecord (слишком много записей не могут отобразиться)
 
+                  axisY->setMax(maxvalue); //устанавливаем максимальное значаение оси У
+                  axisY->setMin(minvalue);//устанавливаем минимальное значаение оси У
+
+                  series->attachAxis(axisY); //доблавяем ось к серии  графика
+                  chart->addSeries(series); //добавляем серию с данными к графику
              }
          }
 
