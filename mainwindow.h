@@ -28,8 +28,8 @@ public:
     ~MainWindow();
 private:
     QFileSystemModel *fileModel;
-    QFileSystemModel *dirModel;
-    QTreeView *treeView;
+    //QFileSystemModel *dirModel;
+    //QTreeView *treeView;
     QTableView *tableView;
     QtCharts::QChartView *chartView;
     QtCharts::QChart *chart;

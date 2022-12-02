@@ -19,6 +19,10 @@
 #include <QPushButton>
 #include <QPdfWriter>
 #include <QSqlDatabase>
+#include <QtCharts/QChartView>
+#include <QtCharts/QPieSeries>
+#include <QtCharts/QBarSet>
+#include <QtCharts/QBarSeries>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -41,9 +45,9 @@ MainWindow::MainWindow(QWidget *parent)
     //fileModel->setRootPath(homePath);
 
     //Показать как дерево, пользуясь готовым видом:
-    treeView = new QTreeView(); //дерево файлов
-    treeView->setModel(dirModel);
-    treeView->expandAll();
+    //treeView = new QTreeView(); //дерево файлов
+    //treeView->setModel(dirModel);
+    //treeView->expandAll();
 
     QSplitter *splitter = new QSplitter(parent); //создаем сплиттер
     tableView = new QTableView; //создаем таблицу
@@ -287,8 +291,27 @@ void MainWindow::redraw()
                   series->attachAxis(axisY); //доблавяем ось к серии  графика
                   chart->addSeries(series); //добавляем серию с данными к графику
              }
+            else if (qbox->currentIndex() == 1) //если был выбран Piechart
+            {
+                QtCharts::QPieSeries *series = new QtCharts::QPieSeries();
+                a_query.first();  //выбираем первую запись в базе данных
+                int i = 0;
+                do //цикл по всем записям из запроса к базе данных
+                {
+                    //доблавяем к серии пару значений time и value
+                    series->append(a_query.value("Time").toString(), a_query.value("Value").toFloat());
+                    i++;
+                }
+                while(a_query.next() && i < numRecord); //переходим к следующей записи и если не больше numRecord (слишком много записей не могут отобразиться)
+
+                chart->addSeries(series); //добавляем серию к графику
+             }
+
+             dbase.close(); //закрываем базу данных
          }
+}
 
-
+MainWindow::~MainWindow()
+{
 
 }
